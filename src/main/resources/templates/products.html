@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css"  href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="row" >
+    <div class="col">
+        <p>
+            Welcome <b>[[${#request.userPrincipal.principal.fullName}]]</b>
+        </p>
+    </div>
+    <div class="col">
+        <form th:action="@{/cart}" align="center" name="form1" method="get">
+            <button class = "button button3"> Go to cart </button>
+        </form>
+    </div>
+    <div class="col">
+        <form th:action="@{/logout}" align="center" name="form1" method="post">
+            <label class="logoutLblPos">
+                <button class = "button button3"> Log out</button>
+            </label>
+        </form>
+    </div>
+</div>
+<div class="products" >
+    <div method="post" >
+        <h2>Products</h2>
+
+        <div th:if="${not #lists.isEmpty(products)}">
+
+            <div class ="item" th:each="product : ${products}">
+                <div class="row">
+                    <div class="col">
+                        <img style="object-fit:contain;
+                    width:200px;
+                    height:200px;
+                    border: solid 1px #CCC"  th:src="${product.pictureUrl}" alt="" ><br>
+                        <p class = "name"><a th:text="${product.name}  "></a></p>
+                        <p class = "price">Price: <a th:text="${product.price}"></a> BGN</p><br>
+                        <div th:replace="quantity_control :: quantity_control(1, ${product.id})">Quantity</div>
+                        <form>
+                            <button class = "button button1" id="addToCartBtn" th:value="${product.id}">Add to cart</button><br>
+                        </form>
+
+                    </div>
+                    <div class="col">
+                        <p><a th:text="${product.shortDescription}"></a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+        contextPath = "[[@{/}]]";
+        var csrfHeaderName = "[[${_csrf.headerName}]]";
+        var csrfValue = "[[${_csrf.token}]]";
+</script>
+<script th:src="@{/js/quantity_control.js}"></script>
+<script th:src="@{/js/add_to_cart.js}"></script>
+<div th:replace="fragments :: standard_modal">Standard Modal Dialog</div>
+</body>
+</html>
